@@ -1,0 +1,20 @@
+[project]
+name = "MewAI"
+version = "0.1.0"
+description = "MewAI using crewAI"
+authors = [{ name = "David Silvera", email = "ingenieria.d.s.g@hotmail.com" }]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "crewai>=0.86.0,<1.0.0",
+]
+
+[project.scripts]
+mininos = "mininos.src.main:main"
+run_crew = "mininos.src.main:main"
+train = "mininos.src.main:train"
+replay = "mininos.src.main:replay"
+test = "mininos.src.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

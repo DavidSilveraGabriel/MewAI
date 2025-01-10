@@ -1,0 +1,9 @@
+write_draft:
+  description: "Write a detailed and engaging blog post on the topic: {topic}"
+  expected_output: "A well-written initial blog post draft."
+review_draft:
+  description: "Review the blog post draft and edit it for clarity, grammar, and style."
+  expected_output: "A refined and well-edited blog post."
+format_post:
+  description: "Create three versions of the blog post optimized for Instagram, Twitter, and LinkedIn."
+  expected_output: 'A JSON object with keys "instagram", "twitter", and "linkedin", each containing the respective content.'
