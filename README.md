@@ -15,6 +15,7 @@ MewAI is a multi-agent system powered by crewAI, utilizing "feline agents" enhan
   - 🔍 Web Researcher
   - ✍️ Content Writer
   - 📋 Reviewer and Editor
+  
 
 ## 🛠️ Requirements
 
@@ -50,6 +51,7 @@ GEMINI_API_KEY=your_api_key
 
 ## 🏗️ Project Structure
 
+```git
 MewAI/
 ├── src/
 │ ├──config/
@@ -68,6 +70,7 @@ MewAI/
 └── pyproject.toml
 ├── venv <-- you need create one
 └── README.md
+```
 
 ## 🤝 Contributing
 
