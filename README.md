@@ -4,7 +4,7 @@
 
 ## 📝 Description
 
-MewAI is a multi-agent system powered by crewAI, utilizing "feline agents" enhanced by Gemini to automate blog content creation. These agents collaborate on tasks involving web research, content drafting, and content review.
+MewAI is a multi-agent system powered by crewAI, utilizing "feline agents" enhanced by Gemini to automate blog content creation. These agents collaborate on tasks involving content drafting, content review and content adaptions for instagram, linkedin and twitter.
 
 ## 🚀 Features
 
@@ -12,7 +12,6 @@ MewAI is a multi-agent system powered by crewAI, utilizing "feline agents" enhan
 - Integration with Gemini for natural language processing
 - Automated workflow for content creation
 - Specialized agents:
-  - 🔍 Web Researcher
   - ✍️ Content Writer
   - 📋 Reviewer and Editor
   
