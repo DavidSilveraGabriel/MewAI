@@ -13,3 +13,8 @@ formatter:
   goal: "Adapt the blog post for different social media platforms (Instagram, Twitter, LinkedIn)."
   backstory: "Experienced in social media content creation."
   verbose: true
+image_generator:
+  role: "Image Generator"
+  goal: "Generate relevant and visually appealing images for the blog post and social media content."
+  backstory: "Expert in image generation with understanding of visual aesthetics."
+  verbose: true

@@ -1742,3 +1742,73 @@ https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:ge
 2025-01-13 17:29:38,061 - crew - INFO - JSON file saved: output\formatted_post.json
 2025-01-13 17:29:38,061 - root - INFO - Crew created successfully!
 2025-01-13 17:29:38,061 - root - INFO - Exploration completed! Files are saved in the output folder.
+2025-01-16 20:49:52,253 - root - INFO - Execution started
+2025-01-16 20:49:52,253 - root - INFO - GOOGLE_API_KEY: AIzaSyD2oWFMTacgtuaoXbt5RonLtA7u7NxD3M4
+2025-01-16 20:49:52,253 - root - INFO - MODEL: gemini/gemini-1.5-pro-latest
+2025-01-16 20:49:52,254 - root - INFO - Topic to explore: AI LLMs
+2025-01-16 20:49:52,254 - root - ERROR - Error during topic exploration
+Traceback (most recent call last):
+  File "C:\Users\ingen\Desktop\CrewAI\MewAI\src\main.py", line 45, in main
+    mininos = Mininos(topic=topic)
+  File "C:\Users\ingen\Desktop\CrewAI\MewAI\src\crew.py", line 27, in __init__
+    self.image_generator_tool = FluxImageGeneratorTool()
+TypeError: Can't instantiate abstract class FluxImageGeneratorTool with abstract method _run
+2025-01-16 22:27:20,368 - root - INFO - Execution started
+2025-01-16 22:27:20,369 - root - INFO - GOOGLE_API_KEY: AIzaSyD2oWFMTacgtuaoXbt5RonLtA7u7NxD3M4
+2025-01-16 22:27:20,369 - root - INFO - MODEL: gemini/gemini-1.5-pro-latest
+2025-01-16 22:27:20,369 - root - INFO - Topic to explore: AI LLMs
+2025-01-16 22:27:20,375 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-01-16 22:27:20,639 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/spaces/black-forest-labs/FLUX.1-schnell HTTP/1.1" 200 1149
+2025-01-16 22:27:20,834 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/spaces/black-forest-labs/FLUX.1-schnell/runtime HTTP/1.1" 200 316
+2025-01-16 22:27:20,836 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-16 22:27:20,836 - httpx - DEBUG - load_verify_locations cafile='C:\\Users\\ingen\\Desktop\\CrewAI\\MewAI\\venv\\lib\\site-packages\\certifi\\cacert.pem'
+2025-01-16 22:27:20,844 - httpcore.connection - DEBUG - connect_tcp.started host='black-forest-labs-flux-1-schnell.hf.space' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-16 22:27:21,075 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002216F31DAB0>
+2025-01-16 22:27:21,075 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000002216F310FC0> server_hostname='black-forest-labs-flux-1-schnell.hf.space' timeout=5.0
+2025-01-16 22:27:21,421 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002216F31D8A0>
+2025-01-16 22:27:21,421 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-16 22:27:21,422 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-16 22:27:21,422 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-16 22:27:21,422 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-16 22:27:21,422 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-16 22:27:21,606 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 17 Jan 2025 01:27:21 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'9775'), (b'Connection', b'keep-alive'), (b'server', b'uvicorn'), (b'x-proxied-host', b'http://10.104.38.146'), (b'x-proxied-path', b'/config'), (b'link', b'<https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell>;rel="canonical"'), (b'x-request-id', b'D7SQVZ'), (b'vary', b'origin, access-control-request-method, access-control-request-headers'), (b'access-control-allow-credentials', b'true')])
+2025-01-16 22:27:21,607 - httpx - INFO - HTTP Request: GET https://black-forest-labs-flux-1-schnell.hf.space/config "HTTP/1.1 200 OK"
+2025-01-16 22:27:21,608 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-16 22:27:21,608 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-16 22:27:21,608 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-16 22:27:21,608 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-16 22:27:21,608 - httpcore.connection - DEBUG - close.started
+2025-01-16 22:27:21,609 - httpcore.connection - DEBUG - close.complete
+2025-01-16 22:27:21,609 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-16 22:27:21,610 - httpx - DEBUG - load_verify_locations cafile='C:\\Users\\ingen\\Desktop\\CrewAI\\MewAI\\venv\\lib\\site-packages\\certifi\\cacert.pem'
+2025-01-16 22:27:21,618 - httpcore.connection - DEBUG - connect_tcp.started host='black-forest-labs-flux-1-schnell.hf.space' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-16 22:27:21,793 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002216F31EB30>
+2025-01-16 22:27:21,793 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000002216F310C40> server_hostname='black-forest-labs-flux-1-schnell.hf.space' timeout=5.0
+2025-01-16 22:27:22,150 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002216F31EB00>
+2025-01-16 22:27:22,150 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-16 22:27:22,151 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-16 22:27:22,151 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-16 22:27:22,151 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-16 22:27:22,151 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-16 22:27:22,344 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 17 Jan 2025 01:27:22 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'2666'), (b'Connection', b'keep-alive'), (b'server', b'uvicorn'), (b'x-proxied-host', b'http://10.104.38.146'), (b'x-proxied-path', b'/info?serialize=False'), (b'link', b'<https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell>;rel="canonical"'), (b'x-request-id', b'SGEAaq'), (b'vary', b'origin, access-control-request-method, access-control-request-headers'), (b'access-control-allow-credentials', b'true')])
+2025-01-16 22:27:22,345 - httpx - INFO - HTTP Request: GET https://black-forest-labs-flux-1-schnell.hf.space/info?serialize=False "HTTP/1.1 200 OK"
+2025-01-16 22:27:22,345 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-16 22:27:22,346 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-16 22:27:22,346 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-16 22:27:22,346 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-16 22:27:22,346 - httpcore.connection - DEBUG - close.started
+2025-01-16 22:27:22,346 - httpcore.connection - DEBUG - close.complete
+2025-01-16 22:27:22,347 - root - ERROR - Error during topic exploration
+Traceback (most recent call last):
+  File "C:\Users\ingen\Desktop\CrewAI\MewAI\src\main.py", line 45, in main
+    mininos = Mininos(topic=topic)
+  File "C:\Users\ingen\Desktop\CrewAI\MewAI\src\crew.py", line 27, in __init__
+    self.image_generator_tool = FluxImageGeneratorTool()
+  File "C:\Users\ingen\Desktop\CrewAI\MewAI\src\tools\FluxImageGeneratorTool.py", line 82, in __init__
+    self.client = Client("black-forest-labs/FLUX.1-schnell")
+  File "C:\Users\ingen\Desktop\CrewAI\MewAI\venv\lib\site-packages\pydantic\main.py", line 926, in __setattr__
+    raise ValueError(f'"{self.__class__.__name__}" object has no field "{name}"')
+ValueError: "FluxImageGeneratorTool" object has no field "client"
+2025-01-16 22:27:22,348 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-16 22:27:22,350 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-01-16 22:27:22,353 - httpx - DEBUG - load_verify_locations cafile='C:\\Users\\ingen\\Desktop\\CrewAI\\MewAI\\venv\\lib\\site-packages\\certifi\\cacert.pem'

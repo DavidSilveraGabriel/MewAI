@@ -7,3 +7,6 @@ review_draft:
 format_post:
   description: "Create three versions of the blog post optimized for Instagram, Twitter, and LinkedIn."
   expected_output: 'A JSON object with keys "instagram", "twitter", and "linkedin", each containing the respective content.'
+generate_images:
+   description: "Generate images for the blog post and social media content based on the provided text. Use the following format: 'prompt: <prompt>, format: <format>, steps: <steps>, randomize: <true/false>, seed: <seed>, width: <width>, height: <height>'. For example: 'prompt: a cat in space, format: instagram_square, steps: 4, randomize: true'. Use the content of the blog post to generate relevant image prompts. Generate 3 images, one for the blog post, one for instagram and one for the others social media."
+   expected_output: "A list of image file names"
