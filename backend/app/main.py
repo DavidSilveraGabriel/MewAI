@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Importar routers
+from .api import generation
+
 app = FastAPI(title="MewAI API", description="API para el sistema de agentes felinos MewAI")
 
 # Configurar CORS
@@ -20,7 +23,8 @@ async def root():
 async def health_check():
     return {"status": "ok"}
 
-# Aquí se importarán y añadirán las rutas de la API
+# Incluir routers
+app.include_router(generation.router)
 
 if __name__ == "__main__":
     import uvicorn
