@@ -3,11 +3,28 @@ import sys
 import logging
 from typing import Dict, Any, Optional
 
-# Añadir el directorio src al path para importar módulos de MewAI
-sys.path.append(os.path.join(os.path.dirname(__file__), "../../../src"))
+# Asegurarnos que la ruta al directorio src es correcta y absoluta
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(current_dir, "../../../"))
+src_dir = os.path.join(root_dir, "src")
 
-# Importar el módulo Mininos de MewAI
-from crew import Mininos
+# Añadir src al path si existe
+if os.path.exists(src_dir):
+    sys.path.append(src_dir)
+    print(f"Añadido {src_dir} al path de Python")
+else:
+    print(f"ADVERTENCIA: No se encontró el directorio {src_dir}")
+
+try:
+    # Importar el módulo Mininos de MewAI
+    from src.crew import Mininos
+except ImportError as e:
+    print(f"Error al importar Mininos: {e}")
+    # Alternativa de importación si la anterior falla
+    try:
+        from src.crew import Mininos
+    except ImportError:
+        print("No se pudo importar el módulo crew. Verifique que existe en el directorio src.")
 
 class MewAIService:
     def __init__(self):

@@ -7,7 +7,6 @@ import { useGeneration } from '../hooks/useGeneration';
 
 
 const NewProject: React.FC = () => {
-  const [loading, setLoading] = useState(false);
   const [topic, setTopic] = useState('');
   const [platforms, setPlatforms] = useState({
     instagram: true,
@@ -18,7 +17,7 @@ const NewProject: React.FC = () => {
   const [length, setLength] = useState('medium');
   const [generateImages, setGenerateImages] = useState(true);
   const navigate = useNavigate();
-  const { startGeneration, isGenerating, error: generationError } = useGeneration();
+  const { startGeneration, isGenerating } = useGeneration();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -196,7 +195,7 @@ const NewProject: React.FC = () => {
                 <Button
                   type="submit"
                   variant="primary"
-                  isLoading={loading}
+                  isLoading={isGenerating}
                 >
                   Iniciar Generación
                 </Button>

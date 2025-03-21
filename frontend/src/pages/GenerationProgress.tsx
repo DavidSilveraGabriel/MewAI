@@ -10,7 +10,6 @@ const GenerationProgress: React.FC = () => {
   const [status, setStatus] = useState('pending');
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<any>(null);
 
   // Obtener el ID de la generación de la URL
   const searchParams = new URLSearchParams(location.search);
@@ -27,10 +26,6 @@ const GenerationProgress: React.FC = () => {
         const response = await generationService.getGenerationStatus(generationId);
         setStatus(response.status);
         setProgress(response.progress || 0);
-        
-        if (response.result) {
-          setResult(response.result);
-        }
         
         if (['completed', 'error'].includes(response.status)) {
           clearInterval(pollInterval);

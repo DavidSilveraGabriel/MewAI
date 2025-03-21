@@ -8,6 +8,7 @@ interface ButtonProps {
   isLoading?: boolean;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -18,6 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   isLoading = false,
   type = 'button',
   disabled = false,
+  className = '',
 }) => {
   const baseStyles = 'font-medium rounded-lg focus:outline-none transition-colors';
   
@@ -39,7 +41,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type={type}
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${loadingStyles} ${disabledStyles}`}
+      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${loadingStyles} ${disabledStyles} ${className}`}
       onClick={onClick}
       disabled={isLoading || disabled}
     >

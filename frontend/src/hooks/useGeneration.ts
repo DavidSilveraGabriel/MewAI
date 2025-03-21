@@ -1,6 +1,6 @@
 // src/hooks/useGeneration.ts
 import { useState } from 'react';
-import { generationService, GenerationSettings, GenerationResponse } from '../api/generation';
+import { generationService, GenerationSettings } from '../api/generation';
 
 export const useGeneration = () => {
   const [isGenerating, setIsGenerating] = useState(false);
