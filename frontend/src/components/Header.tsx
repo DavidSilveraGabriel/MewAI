@@ -1,29 +1,35 @@
 // src/components/Header.tsx
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link
+import Button from './Button'; // Import Button
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-dark-blue-tech shadow-sm z-10"> {/* Fondo azul oscuro */}
+    <header className="bg-xusai-gray-lightest shadow-md z-50 fixed top-0 w-full"> {/* Fixed header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-white">MewAI</h1> {/* Texto blanco */}
+            <img className="h-8 w-auto" src="/logo.png" alt="MewAI Logo" />
+            <h1 className="ml-2 text-xl font-semibold text-gray-800">MewAI</h1>
           </div>
+          <nav className="hidden md:flex space-x-8">
+            <Link to="/" className="text-xusai-gray-dark hover:text-xusai-gray-darker">
+              Dashboard
+            </Link>
+            <a href="#" className="text-xusai-gray-dark hover:text-xusai-gray-darker">
+              Marketplace
+            </a>
+            <a href="#" className="text-xusai-gray-dark hover:text-xusai-gray-darker">
+              Learn
+            </a>
+            <a href="#" className="text-xusai-gray-dark hover:text-xusai-gray-darker">
+              Resources
+            </a>
+          </nav>
           <div className="flex items-center">
-            <button className="ml-3 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white">
-              <span className="sr-only">Ver notificaciones</span>
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </button>
-            <div className="ml-3 relative">
-              <div>
-                <button className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  <span className="sr-only">Abrir menú de usuario</span>
-                  <img className="h-8 w-8 rounded-full" src="https://via.placeholder.com/40" alt="Usuario" />
-                </button>
-              </div>
-            </div>
+            <Button variant="primary">
+              Get started — it's free
+            </Button>
           </div>
         </div>
       </div>

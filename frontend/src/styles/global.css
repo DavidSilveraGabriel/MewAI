@@ -1,9 +1,27 @@
+/* styles/global.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply font-sans antialiased text-gray-900;
+    @apply font-sans antialiased text-gray-900 font-sans bg-xusai-gray-lightest; /* Set background color and font */
+  }
+
+  html, body, #root {
+    height: 100%; /* Ensure full height */
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column; /* Use flex column layout */
+  }
+
+  main {
+    flex: 1; /* Allow main to grow and take available space */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: flex-start; /* Align items to the start vertically */
+    padding: 2rem; /* Add some padding around main content */
   }
 }
