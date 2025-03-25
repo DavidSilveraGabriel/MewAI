@@ -15,8 +15,8 @@ const Sidebar: React.FC = () => {
   return (
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64">
-        <div className="flex flex-col h-0 flex-1 bg-gray-800">
-          <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
+        <div className="flex flex-col h-0 flex-1 bg-dark-blue-tech">
+          <div className="flex items-center h-16 flex-shrink-0 px-4 bg-dark-blue-tech">
             <img className="h-8 w-auto" src="/logo.png" alt="MewAI Logo" />
             <span className="ml-2 text-white text-lg font-semibold">MewAI</span>
           </div>
@@ -30,13 +30,13 @@ const Sidebar: React.FC = () => {
                     to={item.href}
                     className={`${
                       isActive
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        ? 'bg-gray-900 text-white' // Mantener bg-gray-900 para activo
+                        : 'text-gray-500 hover:bg-gray-800 hover:text-white' // Cambiar colores para inactivo y hover
                     } group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
                   >
                     <svg
                       className={`${
-                        isActive ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300'
+                        isActive ? 'text-white' : 'text-gray-500 group-hover:text-white' // Ajustar colores de iconos
                       } mr-3 h-6 w-6`}
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"

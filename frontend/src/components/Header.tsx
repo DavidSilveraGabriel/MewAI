@@ -3,11 +3,11 @@ import React from 'react';
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-white shadow-sm z-10">
+    <header className="bg-dark-blue-tech shadow-sm z-10"> {/* Fondo azul oscuro */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-gray-900">MewAI</h1>
+            <h1 className="text-xl font-semibold text-white">MewAI</h1> {/* Texto blanco */}
           </div>
           <div className="flex items-center">
             <button className="ml-3 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white">
