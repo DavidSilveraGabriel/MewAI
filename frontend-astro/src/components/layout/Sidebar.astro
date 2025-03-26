@@ -1,0 +1,74 @@
+---
+// src/components/layout/Sidebar.astro
+import DashboardIcon from '@mui/icons-material/DashboardOutlined';
+import ListAltIcon from '@mui/icons-material/ListAltOutlined';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmarkOutlined';
+import SettingsIcon from '@mui/icons-material/SettingsOutlined';
+
+interface Props {
+    activePath: string;
+    className?: string;
+    breakpoint?: string; // ej: 'md'
+}
+
+const { activePath, className = 'w-64', breakpoint = 'md' } = Astro.props;
+
+const navItems = [
+  { name: 'Dashboard', href: '/', icon: DashboardIcon },
+  { name: 'Proyectos', href: '/projects', icon: ListAltIcon },
+  { name: 'Biblioteca', href: '/library', icon: CollectionsBookmarkIcon },
+  { name: 'Configuración', href: '/settings', icon: SettingsIcon },
+];
+
+// Clases dinámicas para mostrar/ocultar y posicionar
+const sidebarClasses = `
+    fixed top-0 left-0 z-30 h-full
+    flex flex-col
+    border-r border-neutral-200 dark:border-neutral-700
+    bg-white dark:bg-neutral-800
+    ${className}
+    transform -translate-x-full ${breakpoint}:translate-x-0 transition-transform duration-300 ease-in-out
+`;
+// TODO: Añadir lógica para botón hamburguesa y overlay si se necesita en móvil
+---
+<aside class={sidebarClasses}>
+   {/* Logo Area */}
+   <div class="flex items-center h-16 flex-shrink-0 px-4 border-b border-neutral-200 dark:border-neutral-700">
+      <a href="/" class="flex items-center gap-2">
+        <img class="h-8 w-auto" src="/logo.png" alt="MewAI Logo" />
+        <span class="text-neutral-800 dark:text-neutral-100 text-lg font-semibold">MewAI</span>
+      </a>
+    </div>
+
+  {/* Navigation Area */}
+  <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+    {navItems.map((item) => {
+      const isActive = activePath === item.href || (item.href !== '/' && activePath.startsWith(item.href));
+      const IconComponent = item.icon;
+      return (
+        <a
+          href={item.href}
+          class:list={[
+            "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150",
+            isActive
+                ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 hover:text-neutral-900 dark:hover:text-neutral-100'
+          ]}
+          aria-current={isActive ? 'page' : undefined}
+        >
+          <IconComponent
+             class:list={[
+                "mr-3 flex-shrink-0 h-5 w-5 transition-colors duration-150",
+                isActive ? 'text-primary' : 'text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-500 dark:group-hover:text-neutral-400'
+             ]}
+             style={{ fontSize: '1.25rem' }}
+             client:visible // Hidrata icono React si es necesario
+          />
+          {item.name}
+        </a>
+      );
+    })}
+  </nav>
+  {/* Opcional: Área de Usuario/Logout */}
+  {/* <div class="p-4 border-t border-neutral-200 dark:border-neutral-700"> ... </div> */}
+</aside>

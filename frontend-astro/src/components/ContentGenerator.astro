@@ -1,0 +1,121 @@
+---
+import { useState } from 'react';
+
+const [topic, setTopic] = useState('');
+const [generationId, setGenerationId] = useState(''); // Initialize as empty string
+const [status, setStatus] = useState('idle');
+const [progress, setProgress] = useState(0); // Add progress state
+const [results, setResults] = useState(null);
+const [error, setError] = useState(null);
+
+const handleSubmit = async (event: Event) => {
+  event.preventDefault();
+  setStatus('pending');
+  setError(null);
+
+  try {
+    const response = await fetch('/api/generation/start', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ topic }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setGenerationId(data.id);
+    setStatus('in_progress');
+    pollGenerationStatus(data.id);
+
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      setError(err.message);
+    }
+    setStatus('error');
+  }
+};
+
+const pollGenerationStatus = async (id: string) => {
+  const intervalId = setInterval(async () => {
+    try {
+      const response = await fetch(`/api/generation/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setStatus(data.status);
+      // TODO: Update progress
+      if (data.status === 'completed' || data.status === 'error') {
+        clearInterval(intervalId);
+        if (data.status === 'completed') {
+          setResults(data.result);
+        } else if (data.error) {
+          setError(data.error);
+        }
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+      setStatus('error');
+      clearInterval(intervalId);
+    }
+  }, 5000); // Poll every 5 seconds
+};
+---
+
+<section>
+  <form onSubmit={handleSubmit}>
+    <label for="topic">Enter a topic:</label>
+    <input type="text" id="topic" value={topic} onChange={(e) => {
+      const target = e.target as HTMLInputElement | null;
+      if (target) {
+        setTopic((target as HTMLInputElement).value);
+      }
+    }} />
+    <button type="submit" disabled={status === 'pending'}>Generate</button>
+  </form>
+
+  {status === 'pending' && <p>Generating content...</p>}
+  {status === 'in_progress' && <p>Generating content... (Progress: {progress}%)</p>}
+  {status === 'completed' && (
+    <div>
+      <h2>Generated Content:</h2>
+      {results && Object.entries(results).map(([key, value]) => (
+        <div>
+          <h3>{key}:</h3>
+          <p>{JSON.stringify(value)}</p>
+        </div>
+      ))}
+    </div>
+  )}
+  {error && <p>Error: {error}</p>}
+</section>
+
+<style>
+  section {
+    margin-bottom: 2rem;
+  }
+  input[type="text"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+  }
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+</style>

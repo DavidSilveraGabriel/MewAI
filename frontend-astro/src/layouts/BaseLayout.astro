@@ -1,23 +1,57 @@
+---
+// src/layouts/BaseLayout.astro
+// Importa estilos GLOBALES aquí, no específicos de componentes
+import '@/styles/global.css';
+import Header from '@/components/layout/Header.astro'; // Cambiado nombre
+import Sidebar from '@/components/layout/Sidebar.astro'; // Cambiado nombre
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = 'MewAI - Generación de Contenido Inteligente' } = Astro.props;
+
+const sidebarWidth = 'w-64'; // Ancho consistente del sidebar
+const sidebarMdBreakpoint = 'md'; // Punto de quiebre donde aparece el sidebar
+---
 <!doctype html>
-<html lang="en">
+<html lang="es" class="h-full"> {/* Asegura altura completa */}
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/icono.ico
-" />
+		<link rel="icon" type="image/png" href="/logo.png" /> {/* Usa tu logo png */}
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title} | MewAI</title>
+
+        {/* Carga Fuentes (Ejemplo con Figtree e Inter) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+		{/* Añade View Transitions si quieres animaciones suaves entre páginas */}
+		{/* <ViewTransitions /> */}
 	</head>
-	<body>
-		<slot />
+	<body class="flex h-full bg-neutral-50 dark:bg-neutral-900"> {/* Clase dark opcional */}
+
+		<Sidebar activePath={Astro.url.pathname} className={sidebarWidth} breakpoint={sidebarMdBreakpoint} />
+
+		<div class={`flex flex-1 flex-col ${sidebarMdBreakpoint}:pl-${sidebarWidth.replace('w-','')} overflow-x-hidden`}> {/* Empuja contenido */}
+			{/* Header puede ser opcional si todo está en Sidebar/Páginas */}
+			{/* <Header /> */}
+
+			{/* Contenido principal con padding */}
+			<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+                {/* Opcional: Contenedor para limitar ancho */}
+				{/* <div class="max-w-7xl mx-auto"> */}
+				    <slot />
+                {/* </div> */}
+			</main>
+
+            {/* Footer podría ir aquí si es necesario */}
+            {/* <Footer /> */}
+		</div>
+
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
