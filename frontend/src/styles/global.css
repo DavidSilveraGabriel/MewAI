@@ -5,23 +5,44 @@
 
 @layer base {
   body {
-    @apply font-sans antialiased text-gray-900 font-sans bg-xusai-gray-lightest; /* Set background color and font */
+    /* Usa los colores neutros definidos en tailwind.config.js */
+    @apply font-sans antialiased text-neutral-700 bg-neutral-50; /* Fondo muy claro, texto oscuro */
   }
 
   html, body, #root {
-    height: 100%; /* Ensure full height */
+    height: 100%;
   }
 
   #root {
     display: flex;
-    flex-direction: column; /* Use flex column layout */
+    flex-direction: column;
   }
 
+  /* Ajusta 'main' para padding consistente y centrado si aplica */
   main {
-    flex: 1; /* Allow main to grow and take available space */
+    flex: 1;
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: flex-start; /* Align items to the start vertically */
-    padding: 2rem; /* Add some padding around main content */
+    flex-direction: column; /* Para que el contenido dentro fluya verticalmente */
+    /* justify-content: center; /* Quitado para permitir alineación superior */
+    /* align-items: flex-start; /* Quitado para permitir que el contenido ocupe ancho */
+    padding: theme('spacing.6'); /* Usa la escala de Tailwind (equivale a 1.5rem por defecto) */
+    /* Añade padding top para compensar el header fijo */
+    padding-top: calc(theme('spacing.16') + theme('spacing.6')); /* Altura Header + Padding normal */
   }
+
+  /* Estilos base para inputs/botones si es necesario (opcional) */
+  /* input, select, textarea, button {
+    @apply focus:ring-primary focus:border-primary;
+  } */
+}
+
+/* Opcional: Estilos para la clase 'prose' si usas @tailwindcss/typography */
+@layer components {
+  .prose {
+      @apply text-neutral-700; /* Ajusta colores base del prose */
+  }
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+      @apply text-neutral-900;
+  }
+  /* ... más personalizaciones de prose si es necesario */
 }

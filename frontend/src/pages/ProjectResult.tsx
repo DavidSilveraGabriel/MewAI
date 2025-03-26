@@ -4,27 +4,64 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 import { generationService } from '../api/generation';
+import CircularProgress from '@mui/material/CircularProgress'; // O un spinner simple de Tailwind/CSS
+import Alert from '@mui/material/Alert'; // O un componente Alert simple
 
-// Componente para visualizar el contenido según la plataforma
-const ContentView: React.FC<{ content: string; platform: string }> = ({ content, platform }) => {
+// --- Definir Interfaces ---
+interface SocialMediaContent {
+  instagram?: string;
+  twitter?: string;
+  linkedin?: string;
+  // Añade otras plataformas si existen
+}
+
+interface GenerationResultData {
+  blog_raw?: string; // Contenido original
+  blog_reviewed?: string; // Contenido revisado/final para el blog
+  social_media?: SocialMediaContent;
+  images?: string[]; // URLs de las imágenes
+  // Añade otros campos que tu API devuelva
+  topic?: string; // Podría ser útil mostrar el tema original
+}
+
+interface GenerationStatusResponse {
+  id: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'error';
+  progress?: number;
+  result?: GenerationResultData; // Usar la interfaz definida
+  message?: string; // Mensaje de error
+}
+
+// Componente ContentView usando @tailwindcss/typography
+const ContentView: React.FC<{ content: string | undefined; platform: string }> = ({ content }) => {
+  if (!content) {
+    return <p className="text-neutral-500 text-sm italic">No hay contenido disponible para esta sección.</p>;
+  }
+  // Asegúrate que el contenido es seguro antes de usar dangerouslySetInnerHTML
+  // Aquí asumimos que viene de una fuente confiable o ya está sanitizado.
+  // El plugin @tailwindcss/typography se encargará del estilo base.
   return (
-    <div className="prose prose-sm max-w-none">
-      <div dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }} />
-    </div>
+    <div
+      className="prose prose-sm max-w-none prose-neutral" // Clases de Tailwind Typography
+      dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }} // Mantener reemplazo de saltos de línea si es necesario
+    />
   );
 };
+
+// Plataformas disponibles (podrían venir de la API o ser constantes)
+const AVAILABLE_PLATFORMS = ['blog', 'instagram', 'twitter', 'linkedin', 'images'];
 
 const ProjectResult: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('blog');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<any>(null);
-
-  // Obtener el ID de la generación de la URL
   const searchParams = new URLSearchParams(location.search);
   const generationId = searchParams.get('id');
+
+  // Estado con tipos definidos
+  const [activeTab, setActiveTab] = useState<string>('blog');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<GenerationResultData | null>(null);
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -33,18 +70,33 @@ const ProjectResult: React.FC = () => {
         return;
       }
 
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        const response = await generationService.getGenerationStatus(generationId);
-        
+        const response: GenerationStatusResponse = await generationService.getGenerationStatus(generationId);
+
         if (response.status === 'completed' && response.result) {
           setResult(response.result);
+          // Determinar la primera pestaña activa basada en el contenido disponible
+          const firstAvailableTab = AVAILABLE_PLATFORMS.find(platform => {
+              if (platform === 'blog') return !!response.result?.blog_reviewed;
+              if (platform === 'images') return !!response.result?.images?.length;
+              return !!response.result?.social_media?.[platform as keyof SocialMediaContent];
+          });
+          setActiveTab(firstAvailableTab || 'blog');
+
+        } else if (response.status === 'error') {
+          setError(response.message || 'La generación falló o no se encontraron resultados.');
+        } else if (response.status !== 'completed') {
+           // Si por alguna razón llegamos aquí y no está completado, redirigir al progreso
+           navigate(`/project-progress?id=${generationId}`);
+           return; // Evita que setLoading sea false prematuramente
         } else {
-          setError('No se encontraron resultados o la generación aún no ha terminado.');
+           setError('No se encontraron datos en el resultado de la generación.');
         }
-      } catch (err) {
-        console.error('Error fetching generation result', err);
-        setError('Error al obtener los resultados de la generación.');
+      } catch (err: any) {
+        console.error('Error fetching generation result:', err);
+        setError(err.message || 'Error al cargar los resultados. Inténtalo de nuevo.');
       } finally {
         setLoading(false);
       }
@@ -54,20 +106,26 @@ const ProjectResult: React.FC = () => {
   }, [generationId, navigate]);
 
   const handleExport = (format: string) => {
-    alert(`Exportando en formato ${format}...`);
-    // Implementar la lógica de exportación
+    // TODO: Implementar lógica de exportación real
+    console.log(`Exportando en formato ${format}...`);
+    // Podrías mostrar una notificación toast aquí
+    alert(`Funcionalidad de exportar a ${format} no implementada aún.`);
   };
 
   const handleSave = () => {
-    alert('Guardando proyecto...');
-    // Implementar la lógica de guardado
+    // TODO: Implementar lógica de guardado real (API call?)
+    console.log('Guardando proyecto...');
+    alert('Funcionalidad de guardar proyecto no implementada aún.');
   };
+
+  // --- Renderizado Condicional ---
 
   if (loading) {
     return (
       <Layout>
-        <div className="max-w-5xl mx-auto bg-white rounded-lg shadow p-6">
-          <p className="text-center py-10">Cargando resultados...</p>
+        <div className="flex justify-center items-center h-64">
+          <CircularProgress color="primary" />
+          <span className="ml-4 text-neutral-600">Cargando resultados...</span>
         </div>
       </Layout>
     );
@@ -76,10 +134,10 @@ const ProjectResult: React.FC = () => {
   if (error) {
     return (
       <Layout>
-        <div className="max-w-5xl mx-auto bg-white rounded-lg shadow p-6">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+        <div className="max-w-3xl mx-auto">
+          <Alert severity="error" className="mb-6">
             {error}
-          </div>
+          </Alert>
           <div className="flex justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
               Volver al Dashboard
@@ -90,132 +148,115 @@ const ProjectResult: React.FC = () => {
     );
   }
 
+  if (!result) {
+     // Caso improbable si no hay error pero tampoco resultado
+      return (
+          <Layout>
+              <div className="max-w-3xl mx-auto">
+                  <Alert severity="warning" className="mb-6">
+                      No se pudieron mostrar los resultados.
+                  </Alert>
+                   <div className="flex justify-center">
+                      <Button variant="outline" onClick={() => navigate('/')}>
+                          Volver al Dashboard
+                      </Button>
+                  </div>
+              </div>
+          </Layout>
+      );
+  }
+
+  // Plataformas que realmente tienen contenido
+  const availableTabs = AVAILABLE_PLATFORMS.filter(platform => {
+      if (platform === 'blog') return !!result.blog_reviewed;
+      if (platform === 'images') return !!result.images?.length;
+      return !!result.social_media?.[platform as keyof SocialMediaContent];
+  });
+
+
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Resultados del Proyecto</h1>
-          <div className="flex space-x-3">
-            <Button variant="outline" onClick={handleSave}>
+      <div className="max-w-5xl mx-auto"> {/* Ancho máximo para resultados */}
+        {/* Encabezado con Acciones */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div>
+              <h1 className="text-2xl font-semibold text-neutral-900">Resultados del Proyecto</h1>
+              {result.topic && <p className="text-sm text-neutral-500 mt-1">Tema: "{result.topic}"</p>}
+          </div>
+          <div className="flex space-x-3 flex-shrink-0">
+            {/* Deshabilitar botones si la funcionalidad no está lista */}
+            <Button variant="outline" onClick={handleSave} disabled={true}>
               Guardar Proyecto
             </Button>
-            <Button variant="primary" onClick={() => handleExport('pdf')}>
-              Exportar
+            <Button variant="primary" onClick={() => handleExport('pdf')} disabled={true}>
+              Exportar (PDF)
             </Button>
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow">
-          <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
-              <button
-                className={`${
-                  activeTab === 'blog'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
-                onClick={() => setActiveTab('blog')}
-              >
-                Blog
-              </button>
-              <button
-                className={`${
-                  activeTab === 'instagram'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
-                onClick={() => setActiveTab('instagram')}
-              >
-                Instagram
-              </button>
-              <button
-                className={`${
-                  activeTab === 'twitter'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
-                onClick={() => setActiveTab('twitter')}
-              >
-                Twitter
-              </button>
-              <button
-                className={`${
-                  activeTab === 'linkedin'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
-                onClick={() => setActiveTab('linkedin')}
-              >
-                LinkedIn
-              </button>
-              <button
-                className={`${
-                  activeTab === 'images'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
-                onClick={() => setActiveTab('images')}
-              >
-                Imágenes
-              </button>
+
+        {/* Contenedor con Pestañas */}
+        <div className="bg-white rounded-lg shadow-card border border-neutral-200 overflow-hidden">
+          {/* Navegación de Pestañas */}
+          <div className="border-b border-neutral-200">
+            <nav className="-mb-px flex space-x-6 overflow-x-auto px-4 sm:px-6" aria-label="Tabs">
+              {availableTabs.map((platform) => (
+                <button
+                  key={platform}
+                  onClick={() => setActiveTab(platform)}
+                  className={`
+                    whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-150
+                    ${
+                      activeTab === platform
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+                    }
+                  `}
+                  aria-current={activeTab === platform ? 'page' : undefined}
+                >
+                  {/* Capitalizar nombre para mostrar */}
+                  {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                </button>
+              ))}
             </nav>
           </div>
-          
+
+          {/* Contenido de la Pestaña Activa */}
           <div className="p-6">
             {activeTab === 'blog' && (
-              <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-4">Contenido del Blog</h2>
-                <ContentView 
-                  content={result?.blog_reviewed || "No hay contenido disponible."} 
-                  platform="blog" 
-                />
-              </div>
+              <ContentView content={result.blog_reviewed} platform="blog" />
             )}
-            
+
             {activeTab === 'instagram' && (
-              <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-4">Contenido para Instagram</h2>
-                <ContentView 
-                  content={result?.social_media?.instagram || "No hay contenido disponible para Instagram."} 
-                  platform="instagram" 
-                />
-              </div>
+              <ContentView content={result.social_media?.instagram} platform="instagram" />
             )}
-            
+
             {activeTab === 'twitter' && (
-              <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-4">Contenido para Twitter</h2>
-                <ContentView 
-                  content={result?.social_media?.twitter || "No hay contenido disponible para Twitter."} 
-                  platform="twitter" 
-                />
-              </div>
+              <ContentView content={result.social_media?.twitter} platform="twitter" />
             )}
-            
+
             {activeTab === 'linkedin' && (
-              <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-4">Contenido para LinkedIn</h2>
-                <ContentView 
-                  content={result?.social_media?.linkedin || "No hay contenido disponible para LinkedIn."} 
-                  platform="linkedin" 
-                />
-              </div>
+              <ContentView content={result.social_media?.linkedin} platform="linkedin" />
             )}
-            
+
             {activeTab === 'images' && (
               <div>
-                <h2 className="text-xl font-medium text-gray-900 mb-4">Imágenes Generadas</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {result?.images && result.images.length > 0 ? (
-                    result.images.map((image: string, index: number) => (
-                      <div key={index} className="border rounded-lg overflow-hidden">
-                        <img src={image} alt={`Imagen generada ${index + 1}`} className="w-full h-auto" />
+                <h2 className="text-lg font-medium text-neutral-900 mb-4">Imágenes Generadas</h2>
+                {result.images && result.images.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {result.images.map((imageUrl, index) => (
+                      <div key={index} className="border border-neutral-200 rounded-md overflow-hidden aspect-square bg-neutral-100">
+                        <img
+                            src={imageUrl} // Asegúrate que las URLs son accesibles
+                            alt={`Imagen generada ${index + 1}`}
+                            className="w-full h-full object-cover"
+                            loading="lazy" // Carga diferida para imágenes
+                        />
                       </div>
-                    ))
-                  ) : (
-                    <p className="col-span-3 text-gray-500">No hay imágenes disponibles.</p>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                   <p className="text-neutral-500 text-sm italic">No se generaron imágenes para este proyecto.</p>
+                )}
               </div>
             )}
           </div>
