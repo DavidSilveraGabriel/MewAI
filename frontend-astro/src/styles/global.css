@@ -1,1 +1,104 @@
-@import "tailwindcss";
+/* src/styles/global.css */
+
+/* ==========================================================================
+   1. IMPORTACIONES BASE DE TAILWIND (para v3)
+   ========================================================================== */
+   @import "tailwindcss/base";
+   @import "tailwindcss/components";
+   @import "tailwindcss/utilities";
+   
+   @layer base {
+     /* ==========================================================================
+        2. CONFIGURACIÓN GLOBAL Y VARIABLES CSS
+        ========================================================================== */
+     :root {
+       /* Paleta Primaria (ajusta según tu tailwind.config) */
+       --color-primary-light: hsl(205, 90%, 75%);
+       --color-primary: hsl(205, 85%, 55%);
+       --color-primary-dark: hsl(205, 80%, 45%);
+   
+       /* Paleta Neutral */
+       --color-bg-base: theme('colors.neutral.50'); /* #FAFAFA */
+       --color-bg-muted: theme('colors.neutral.100'); /* #F5F5F5 */
+       --color-border-base: theme('colors.neutral.200'); /* #E5E5E5 */
+       --color-text-base: theme('colors.neutral.700'); /* #404040 */
+       --color-text-muted: theme('colors.neutral.500'); /* #737373 */
+       --color-text-headings: theme('colors.neutral.900'); /* #171717 */
+   
+       /* Paleta Oscura */
+       --dark-color-bg-base: theme('colors.neutral.900');
+       --dark-color-bg-muted: theme('colors.neutral.800');
+       --dark-color-border-base: theme('colors.neutral.700');
+       --dark-color-text-base: theme('colors.neutral.300');
+       --dark-color-text-muted: theme('colors.neutral.400');
+       --dark-color-text-headings: theme('colors.neutral.100');
+   
+       /* Variables de Prose (son manejadas por el plugin y config, pero puedes definirlas si quieres) */
+       /* --tw-prose-body: theme('colors.neutral.700'); ... etc */
+     }
+   
+     .dark { /* O html.dark si usas el selector 'class' */
+       --color-bg-base: var(--dark-color-bg-base);
+       --color-bg-muted: var(--dark-color-bg-muted);
+       --color-border-base: var(--dark-color-border-base);
+       --color-text-base: var(--dark-color-text-base);
+       --color-text-muted: var(--dark-color-text-muted);
+       --color-text-headings: var(--dark-color-text-headings);
+     }
+   
+     /* ==========================================================================
+        3. ESTILOS BASE HTML/BODY
+        ========================================================================== */
+     html {
+       font-family: theme('fontFamily.sans');
+       scroll-behavior: smooth;
+       background-color: var(--color-bg-base);
+       color: var(--color-text-base);
+     }
+   
+     body {
+       margin: 0;
+       min-height: 100vh;
+       display: flex; /* Necesario para el layout con sidebar fijo */
+       transition: background-color 0.3s ease, color 0.3s ease;
+     }
+   
+     /* Estilos para links globales (opcional) */
+     /* a {
+        @apply text-primary hover:text-primary-dark transition-colors;
+      } */
+   
+     /* ... otros estilos base que necesites ... */
+   
+   }
+   
+   /* ==========================================================================
+      4. ANIMACIONES (Ejemplo)
+      ========================================================================== */
+   @layer utilities {
+     .animate-fade-in {
+       animation: fadeIn 0.5s ease-out forwards;
+     }
+     /* ... otras animaciones ... */
+   }
+   
+   @keyframes fadeIn {
+     from { opacity: 0; }
+     to { opacity: 1; }
+   }
+   
+   /* ==========================================================================
+      5. COMPONENTES PERSONALIZADOS (Ejemplo)
+      ========================================================================== */
+   /* @layer components {
+      .card {
+        @apply bg-white dark:bg-neutral-800 rounded-lg shadow-card border border-neutral-200 dark:border-neutral-700 p-6;
+      }
+    } */
+   
+   /* ==========================================================================
+       6. ESTILOS ESPECÍFICOS (Como los de markdown si no usas @tailwindcss/typography)
+      ========================================================================== */
+   /* Si usas el plugin de tipografía, estos estilos se aplicarán automáticamente a .prose */
+   /* article { ... } */
+   /* article h1 { @apply text-4xl font-bold mb-4 text-[--color-text-headings]; } ... etc */
