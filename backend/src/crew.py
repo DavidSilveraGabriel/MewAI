@@ -70,7 +70,7 @@ class Mininos:
     def _initialize_llm(self) -> LLM: # Cambiar tipo de retorno a crewai.LLM
         """Initializes the language model using crewai.LLM wrapper."""
         model_name = os.getenv('MODEL')
-        api_key = os.getenv('GEMINI_API_KEY')
+        api_key = os.getenv('GOOGLE_API_KEY') # Corrected variable name
         # Opcional: Leer temperatura desde .env o usar un default
         try:
             temperature = float(os.getenv('LLM_TEMPERATURE', 0.6))
@@ -79,8 +79,8 @@ class Mininos:
             temperature = 0.6
 
         if not model_name or not api_key:
-            logger.error("MODEL and/or GEMINI_API_KEY not found in .env file")
-            raise ValueError("MODEL and GEMINI_API_KEY must be set in the .env file")
+            logger.error("MODEL and/or GOOGLE_API_KEY not found in .env file") # Corrected error message
+            raise ValueError("MODEL and GOOGLE_API_KEY must be set in the .env file") # Corrected error message
 
         # Asegurarse de que el nombre del modelo tenga el prefijo 'gemini/' para LiteLLM
         if not model_name.startswith("gemini/"):
@@ -182,10 +182,12 @@ class Mininos:
          if self.progress_callback and self.generation_id:
              task_index = -1
              try:
-                 # Try to find the index of the completed task to estimate progress
-                 task_description_prefix = task_output.task.description[:30]
+                 # Try to find the index of the completed task using task_output.description
+                 task_description_prefix = task_output.description[:30]
                  for i, task_key in enumerate(self.tasks_config.keys()):
-                     if self.tasks_config[task_key].get('description', '').format(topic=self.topic).startswith(task_description_prefix):
+                     # Ensure self.tasks_config is loaded and contains descriptions
+                     task_config_desc = self.tasks_config.get(task_key, {}).get('description', '')
+                     if task_config_desc and task_config_desc.format(topic=self.topic).startswith(task_description_prefix):
                          task_index = i
                          break
              except Exception as e:
@@ -196,21 +198,20 @@ class Mininos:
                  # Calculate progress: add 1 because index is 0-based, ensure small progress even for first task
                  progress_percentage = max(10, int(((task_index + 1) / self.total_tasks) * 95)) # Leave last 5% for final wrap-up
 
+             # Use task_output.description directly
              message = f"Task '{task_output.description[:50]}...' completed."
              progress_info = {
                  "message": message,
                  "progress": progress_percentage,
-                 "task_result_summary": str(task_output.raw_output)[:200] # Example summary
+                 # Use task_output.result for the summary, converting to string
+                 "task_result_summary": str(task_output.result)[:200] if hasattr(task_output, 'result') else str(task_output)[:200]
              }
+             # Directly call the callback function if it exists
              try:
-                 loop = asyncio.get_running_loop()
-                 # Use call_soon_threadsafe to schedule the callback on the main event loop
-                 loop.call_soon_threadsafe(self.progress_callback, self.generation_id, progress_info)
+                 self.progress_callback(self.generation_id, progress_info)
                  logger.info(f"Sent progress update via callback: {progress_info}")
-             except RuntimeError:
-                 logger.warning("No running asyncio loop found for task callback.")
              except Exception as e:
-                 logger.error(f"Error in task callback: {e}")
+                 logger.error(f"Error executing progress callback: {e}")
 
 
     def configure_crew(self) -> Crew:
@@ -236,7 +237,7 @@ class Mininos:
             crew = Crew(
                 agents=[writer_agent, reviewer_agent, formatter_agent, image_generator_agent],
                 tasks=self.tasks,
-                verbose=2, # Use level 2 for detailed logs
+                verbose=True, # Changed from integer 2 to boolean True
                 # step_callback=self._step_callback, # step_callback can be very verbose
                 task_callback=self._task_callback # Use task_callback for progress milestones
             )
@@ -330,25 +331,29 @@ class Mininos:
             }
 
             # Safely access task outputs using the configured task order
-            task_outputs = {task.description[:30]: task.output for task in crew.tasks if task.output}
-
+            # Access task outputs safely, checking for 'output' and then 'result'
             if crew.tasks and len(crew.tasks) > 0 and crew.tasks[0].output:
-                 results["blog_draft"] = str(crew.tasks[0].output.raw_output) # Access raw_output
+                 # Use .result if available, otherwise fallback to string representation
+                 output_content = crew.tasks[0].output.result if hasattr(crew.tasks[0].output, 'result') else str(crew.tasks[0].output)
+                 results["blog_draft"] = str(output_content)
                  # self._save_output(f"{self.generation_id}_blog_draft.md", results["blog_draft"]) # Optional save
 
             if crew.tasks and len(crew.tasks) > 1 and crew.tasks[1].output:
-                 results["blog_reviewed"] = str(crew.tasks[1].output.raw_output)
+                 output_content = crew.tasks[1].output.result if hasattr(crew.tasks[1].output, 'result') else str(crew.tasks[1].output)
+                 results["blog_reviewed"] = str(output_content)
                  # self._save_output(f"{self.generation_id}_blog_reviewed.md", results["blog_reviewed"]) # Optional save
 
             if crew.tasks and len(crew.tasks) > 2 and crew.tasks[2].output:
-                 formatter_output_str = str(crew.tasks[2].output.raw_output)
+                 output_content = crew.tasks[2].output.result if hasattr(crew.tasks[2].output, 'result') else str(crew.tasks[2].output)
+                 formatter_output_str = str(output_content)
                  processed_social = self._process_formatter_output(formatter_output_str)
                  results["social_media"] = processed_social
                  # self._save_output(f"{self.generation_id}_social_media.json", results["social_media"]) # Optional save
 
             if crew.tasks and len(crew.tasks) > 3 and crew.tasks[3].output:
-                 # The image tool returns a string; capture it. Consider modifying tool for list of paths.
-                 results["images"] = str(crew.tasks[3].output.raw_output)
+                 output_content = crew.tasks[3].output.result if hasattr(crew.tasks[3].output, 'result') else str(crew.tasks[3].output)
+                 # The image tool likely returns a string path or message in .result
+                 results["images"] = str(output_content)
                  # No file saving here as tool already saves images
 
             logger.info(f"[{self.generation_id}] Results collected successfully.")

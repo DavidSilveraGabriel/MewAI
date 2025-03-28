@@ -6,16 +6,19 @@ authors = [{ name = "David Silvera", email = "ingenieria.d.s.g@hotmail.com" }]
 requires-python = ">=3.10,<=3.13"
 dependencies = [
     "crewai[tools]>=0.86.0,<1.0.0",
-    "fastapi>=0.110.0,<1.0.0",
-    "uvicorn[standard]>=0.29.0,<1.0.0",
+    # "fastapi>=0.110.0,<1.0.0", # Removed FastAPI
+    # "uvicorn[standard]>=0.29.0,<1.0.0", # Removed Uvicorn
     "python-dotenv>=1.0.0,<2.0.0",
     "PyYAML>=6.0,<7.0.0",
-    "gradio_client>=0.16.0,<1.0.0",
+    "gradio_client>=0.16.0,<1.0.0", # Keep for tools if needed
     "aiofiles>=23.2.1,<24.0.0",
     # --- DEPENDENCIA ACTUALIZADA ---
-    # langchain-core y langchain-google-genai ya no son estrictamente necesarias aquí
+    # --- AÑADIR ESTA LÍNEA DE NUEVO ---
+    "gradio_client>=0.16.0,<1.0.0", # Necesaria para la herramienta de imagen
+    # --- ---
     # crewai.LLM usa LiteLLM bajo el capó. Incluirlo explícitamente es bueno.
-    "litellm>=1.35.0,<2.0.0" # O versión compatible que use crewai
+    "litellm>=1.35.0,<2.0.0", # O versión compatible que use crewai
+    "streamlit>=1.30.0,<2.0.0" # Added Streamlit
 ]
 
 [project.scripts]
